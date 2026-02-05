@@ -1,0 +1,8 @@
+PROBLEMS I'VE ENCOUNTERED:  having to add additional policies into IAM roles in order to get things to work properly. one case was adding a SSM policy in order to allow for cloud watch logs to be made and read in the ec2 and to allow for to confirm the cloud watch logs are good via CLI.
+
+another problem encountered when trying to confirm the to see if the EC2 can read from both parameter and secret manager it was able to read the parameter but was denied access for the secret manager values.   the issue was that the ARN that was attached to the JSON inline policy that was provided in the Armageddon repo for lab 1a was very specific and i found that although that policy would allow the ec2 to get the secret manager values, because of the specific ARN attached to that policy I wasn't gonna be allowed access to the secret manager values from within the EC2. in this case I was able to find the solution to fix this by modifying the inline JSON policy that was provided in the repo by adding a wildcard * to the ARN. this edit to the script now allowed me to be able to demonstrate that the EC2 can now retrieve and read the values from both parameter and secret manager
+
+
+
+setting up a parameter store values and secret manager.
+then setting up cloud watch logs for data base then attaching an inline policy to the EC2 Iam role in order for the EC2 to write out policies.
