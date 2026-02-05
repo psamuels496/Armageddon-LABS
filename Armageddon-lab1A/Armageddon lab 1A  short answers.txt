@@ -1,0 +1,36 @@
+Armageddon lab 1A : short answers
+
+
+1) why is DB inbound source restricted to EC2 security group?
+
+answer: because this would allow Data base access only from the app servers Security group.
+
+2) what port does MySQL use?
+
+answer: 3306
+
+3) why is secrets manager better than storing creds in code/user-data?
+
+answer: Because it is a service offered and managed by AWS making it easier to manage and insures security as opposed to storing it in a code which would be less secure.
+
+
+Why each rule exists What would break if removed Why broader access is forbidden Why this role exists Why it can read this secret Why it cannot read others?
+
+
+
+why each rule exist and what would break if removed?  - the rules exist as infrastructure to build on. if one piece is absent then there is no platform to build off of. why broader access is forbidden? because security is a top priority for any company. you cant have a data base be publicly accessible otherwise that would a threat to security. this role exist to help protect the secret id's and passwords as well as data base access and it helps manage and determines who has access and who doesn't. 
+
+
+purpose of lab overall: to create a connection to an RDS using an EC2 through the use of security groups. then we use secret manage and IAM policies attached to our EC2 to manage the credentials for better protection and security. we then must get into the habit of verifying our work through the CLI commands to ensure our infrastructure that we built is functioning properly. 
+
+
+structure:
+1) build 2 security groups first. the first one is a EC2 security group with 2 inbound rules HTTP and SSH (port 80 and 22) and the 2nd security group one for the rds with Inbound rules set to MySQL/Aurora with port 3306  with the source being the EC2 security group created prior
+2) build a rds data base. go to data base in AWS click create Database.  select MySQL as the data base. then name your data base instance then under username put admin, then set a password. and leave everything else as default then click create data base. 
+3) then create EC2 instance. create a name for the EC2,  you can create a key pair and then set the SG to the EC2 SG created earlier. paste the script from theo's repo into the user data spot. the select launch instance.
+4) go to secret manager, then select store new secret. secret credentials for RDS database then set the username and password that you used to set up the RDS database for secret manager. then select the data base that you create earlier then create a secret name then finalize ad review then create secret manager.
+5) then go to IAM and select role. then click create role. leave it on AWS services then scroll to the bottom where it says use case and in the drop down box click EC2. then go to add permissions. In this case i didn't use the inline json policy script from the Armageddon repo and just opted instead to just selecting the and just went with selecting  SecretsManagerReadWrite in the policy additions. then i just set the role.
+6) then you go to your EC2 instances that you created, then click on actions, then click security then in the drop down you select "modify IAM roles" you then select the IAM role you created from earlier.
+7) then you bootstrap the EC2 apps user data script. so you select the instance then go to instance state and select "Stop Instance" (NOT TERMINATE INSTANCE). while the instance is stopped you click "actions" and then go to "Network settings" then select "edit user data" this is were you make changes to the secret ID in the script to the one you used to create in secret manager. then after finished with the modification you click apply changes then you go back to instance state and restart the instance again.
+8) afterwards you can test the connection by copying and pasting the instance public DNS to verify there is a connection to the RDS database
+9) lastly you want to run a series of CLI commands that are in the Armageddon repo to confirm the existing security groups, their sources the RDS data base and its connection via the ec2, and the secret manager credentials as well as the IAM policy roles and attachments. these are meant to insure that you set everything up correctly and that everything is working properly and as intended.
