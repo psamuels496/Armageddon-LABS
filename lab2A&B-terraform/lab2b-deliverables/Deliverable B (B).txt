@@ -1,0 +1,10 @@
+Deliverable B (B)
+
+What is my cache key for `/api/*` and why?_
+
+ For /api/*, my CloudFront cache policy sets min_ttl, default_ttl, and max_ttl to 0, effectively disabling caching. Because responses are not stored, the cache key is not meaningfully used. Each request is forwarded to the origin to ensure freshness and prevent serving one user’s dynamic data to another user.
+
+
+
+What am I forwarding to the origin and why?
+For /api/*, my origin request policy forwards query strings (and can be extended to forward headers or cookies if required by the application). These values are forwarded to the origin to preserve correct application behavior but are intentionally not included in the cache key. For /static/*, the origin request policy forwards no headers, cookies, or query strings to maximize cache hit ratio and minimize origin load.
